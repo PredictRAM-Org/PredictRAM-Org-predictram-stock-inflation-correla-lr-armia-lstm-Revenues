@@ -94,7 +94,6 @@ if st.button("Train Models"):
     future_prices_arima_list = []
     latest_actual_prices = []
     future_price_lstm_list = []
-    net_income_list = []
     stock_names = []
 
     for stock_file in stock_files:
@@ -172,17 +171,10 @@ if st.button("Train Models"):
         fundamental_data = read_fundamental_data(stock_folder, stock_name)
 
         if fundamental_data is not None:
-            # Extract Net Income from fundamental data
-            net_income = fundamental_data.get('Net Income', [])
-
-            if net_income is None:
-                st.write(f"Insufficient data for Net Income for {stock_name}. Skipping.")
-            else:
-                # Output Net Income
-                st.write(f"Net Income for {stock_name}: {net_income}")
-
-                # Append to lists
-                net_income_list.append(net_income)
+            # Output Income Statement
+            income_statement = fundamental_data.get('IncomeStatement', {})
+            st.write(f"Income Statement for {stock_name}:")
+            st.write(income_statement)
 
         correlations.append(correlation_close_cpi)
         future_prices_lr_list.append(future_prices_lr[0])
@@ -199,7 +191,6 @@ if st.button("Train Models"):
         'Predicted Price Change (ARIMA)': future_prices_arima_list,
         'Latest Actual Price': latest_actual_prices,
         'Predicted Stock Price (LSTM)': future_price_lstm_list,
-        'Net Income': net_income_list
     }
     results_df = pd.DataFrame(results_data)
 
