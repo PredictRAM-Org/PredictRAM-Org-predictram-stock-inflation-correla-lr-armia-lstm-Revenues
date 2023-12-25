@@ -53,7 +53,7 @@ def read_fundamental_data(stock_folder, stock_name):
             st.write(f"Error decoding JSON for {stock_name}_data.json. Details: {str(e)}")
             return None
     else:
-        st.write(f"Warning: Fundamental data not found for {stock_name}_data. Skipping. Path: {fundamental_file_path}")
+        st.write(f"Warning: Fundamental data not found for {stock_name}. Skipping. Path: {fundamental_file_path}")
         return None
 
 # Load CPI data
