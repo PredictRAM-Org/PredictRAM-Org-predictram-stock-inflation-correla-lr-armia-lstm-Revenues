@@ -40,15 +40,17 @@ def predict_future_lstm(last_observed_price, model, min_max_scaler, num_steps=1)
 
 # Function to read fundamental data from JSON files
 def read_fundamental_data(stock_folder, stock_name):
-    fundamental_file_path = os.path.join(stock_folder, "funda", f"{stock_name}.json")
+    fundamental_file_path = os.path.join(stock_folder, "fundamental_data", f"{stock_name}_data.json")
     if os.path.exists(fundamental_file_path):
         try:
             with open(fundamental_file_path, 'r') as f:
                 fundamental_data = json.load(f)
                 st.write(f"Fundamental data for {stock_name} loaded successfully.")
+                st.write(f"Content of {stock_name}_data.json:")
+                st.write(fundamental_data)
             return fundamental_data
         except json.JSONDecodeError as e:
-            st.write(f"Error decoding JSON for {stock_name}.json. Details: {str(e)}")
+            st.write(f"Error decoding JSON for {stock_name}_data.json. Details: {str(e)}")
             return None
     else:
         st.write(f"Warning: Fundamental data not found for {stock_name}. Skipping. Path: {fundamental_file_path}")
@@ -179,10 +181,7 @@ if st.button("Train Models"):
             # Output Income Statement
             income_statement = fundamental_data.get('IncomeStatement', {})
             st.write(f"Income Statement for {stock_name}:")
-            income_statement_df = pd.DataFrame(income_statement)
-            income_statement_df['Date'] = pd.to_datetime(income_statement_df['Date'], errors='coerce')
-            income_statement_df = income_statement_df.sort_values(by='Date')
-            st.table(income_statement_df)
+            st.table(pd.DataFrame(income_statement))
 
         correlations.append(correlation_close_cpi)
         future_prices_lr_list.append(future_prices_lr[0])
