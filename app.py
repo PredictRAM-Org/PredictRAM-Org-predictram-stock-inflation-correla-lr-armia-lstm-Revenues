@@ -90,6 +90,14 @@ filtered_cpi_data = cpi_data.loc[start_date:end_date]
 # User input for expected CPI inflation
 expected_inflation = st.number_input("Enter Expected Upcoming CPI Inflation:", min_value=0.0, step=0.01)
 
+# Define the specified dates
+specified_dates = [
+    "Sep-15", "Dec-15", "Mar-16", "Jun-16", "Sep-16", "Dec-16", "Mar-17", "Jun-17", "Sep-17",
+    "Dec-17", "Mar-18", "Jun-18", "Sep-18", "Dec-18", "Mar-19", "Jun-19", "Sep-19", "Dec-19",
+    "Mar-20", "Jun-20", "Sep-20", "Dec-20", "Mar-21", "Jun-21", "Sep-21", "Dec-21", "Mar-22",
+    "Jun-22", "Sep-22", "Dec-22", "Mar-23", "Jun-23", "Sep-23"
+]
+
 # Train models
 if st.button("Train Models"):
     st.write(f"Training models with data range: {data_range}, expected CPI inflation: {expected_inflation}, and selected stocks: {selected_stocks}...")
@@ -176,12 +184,15 @@ if st.button("Train Models"):
         fundamental_data = read_fundamental_data(stock_folder, stock_name)
 
         if fundamental_data is not None:
-            # Output Income Statement
+            # Output Income Statement for specified dates
             income_statement = fundamental_data.get('IncomeStatement', {})
             st.write(f"Income Statement for {stock_name}:")
+
+            # Filter Income Statement based on specified dates
             income_statement_df = pd.DataFrame(income_statement)
             income_statement_df['Date'] = pd.to_datetime(income_statement_df['Date'], errors='coerce')
             income_statement_df = income_statement_df.dropna(subset=['Date'])  # Drop rows with invalid dates
+            income_statement_df = income_statement_df[income_statement_df['Date'].dt.strftime('%b-%y').isin(specified_dates)]
             income_statement_df = income_statement_df.sort_values(by='Date')
             st.table(income_statement_df)
 
