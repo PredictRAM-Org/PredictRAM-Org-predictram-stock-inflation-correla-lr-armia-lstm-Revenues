@@ -49,14 +49,6 @@ def read_fundamental_data(stock_folder, stock_name):
         st.write(f"Warning: Fundamental data not found for {stock_name}. Skipping.")
         return None
 
-# Function to predict future trends in Total Revenue/Income and Net Income
-def predict_future_trends(total_revenue_income, net_income, num_steps=4):
-    # For simplicity, let's assume a naive trend prediction based on the last observed value
-    total_revenue_trend = 'Increasing' if total_revenue_income[-1] < total_revenue_income[-2] else 'Decreasing'
-    net_income_trend = 'Increasing' if net_income[-1] < net_income[-2] else 'Decreasing'
-
-    return total_revenue_trend, net_income_trend
-
 # Load CPI data
 cpi_data = pd.read_excel("CPI.xlsx")
 cpi_data['Date'] = pd.to_datetime(cpi_data['Date'])
@@ -102,8 +94,8 @@ if st.button("Train Models"):
     future_prices_arima_list = []
     latest_actual_prices = []
     future_price_lstm_list = []
-    total_revenue_trends = []
-    net_income_trends = []
+    total_revenue_list = []
+    net_income_list = []
     stock_names = []
 
     for stock_file in stock_files:
@@ -188,19 +180,17 @@ if st.button("Train Models"):
             if len(total_revenue_income) < 2 or len(net_income) < 2:
                 st.write(f"Insufficient data for Total Revenue/Income or Net Income for {stock_name}. Skipping.")
             else:
-                # Predict future trends
-                total_revenue_trend, net_income_trend = predict_future_trends(total_revenue_income, net_income)
-
-                st.write(f"Predicted Trend for Total Revenue/Income (Next 4 quarters): {total_revenue_trend}")
-                st.write(f"Predicted Trend for Net Income (Next 4 quarters): {net_income_trend}")
+                # Output Total Revenue/Income and Net Income
+                st.write(f"Total Revenue/Income for {stock_name}: {total_revenue_income}")
+                st.write(f"Net Income for {stock_name}: {net_income}")
 
         correlations.append(correlation_close_cpi)
         future_prices_lr_list.append(future_prices_lr[0])
         future_prices_arima_list.append(future_prices_arima)
         latest_actual_prices.append(latest_actual_price)
         future_price_lstm_list.append(future_price_lstm)
-        total_revenue_trends.append(total_revenue_trend)
-        net_income_trends.append(net_income_trend)
+        total_revenue_list.append(total_revenue_income)
+        net_income_list.append(net_income)
         stock_names.append(stock_name)
 
     # Create a DataFrame for results
@@ -211,8 +201,8 @@ if st.button("Train Models"):
         'Predicted Price Change (ARIMA)': future_prices_arima_list,
         'Latest Actual Price': latest_actual_prices,
         'Predicted Stock Price (LSTM)': future_price_lstm_list,
-        'Total Revenue Trend': total_revenue_trends,
-        'Net Income Trend': net_income_trends
+        'Total Revenue/Income': total_revenue_list,
+        'Net Income': net_income_list
     }
     results_df = pd.DataFrame(results_data)
 
