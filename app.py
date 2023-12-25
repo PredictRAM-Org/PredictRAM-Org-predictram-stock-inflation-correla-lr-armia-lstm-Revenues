@@ -39,7 +39,7 @@ def predict_future_lstm(last_observed_price, model, min_max_scaler, num_steps=1)
     return min_max_scaler.inverse_transform(np.array(predicted_prices).reshape(1, -1))[0]
 
 # Function to read fundamental data from JSON files
-def read_fundamental_data(stock_folder, stock_name):
+def read_fundamental_data(fundamental_data, stock_name):
     fundamental_file_path = os.path.join(stock_folder, "fundamental_data", f"{stock_name}_data.json")
     if os.path.exists(fundamental_file_path):
         try:
