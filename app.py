@@ -175,13 +175,13 @@ if st.button("Train Models"):
         st.write(f"Latest Actual Price for {stock_name}: {latest_actual_price}")
 
         # Read fundamental data
-        fundamental_data = read_fundamental_data(stock_folder, stock_name)
+fundamental_data = read_fundamental_data(stock_folder, stock_name)
 
-        if fundamental_data is not None:
-            # Output Income Statement
-            income_statement = fundamental_data.get('IncomeStatement', {})
-            st.write(f"Income Statement for {stock_name}:")
-            st.table(pd.DataFrame(income_statement))
+if fundamental_data is not None:
+    # Output Income Statement
+    income_statement = fundamental_data.get('IncomeStatement', {})
+    st.write(f"Income Statement for {stock_name}:")
+    st.table(pd.DataFrame(income_statement))
 
         correlations.append(correlation_close_cpi)
         future_prices_lr_list.append(future_prices_lr[0])
