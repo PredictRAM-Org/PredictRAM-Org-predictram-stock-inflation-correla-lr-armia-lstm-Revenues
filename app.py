@@ -42,9 +42,16 @@ def predict_future_lstm(last_observed_price, model, min_max_scaler, num_steps=1)
 def read_fundamental_data(stock_folder, stock_name):
     fundamental_file_path = os.path.join(stock_folder, "fundamental_data", f"{stock_name}.json")
     if os.path.exists(fundamental_file_path):
-        with open(fundamental_file_path, 'r') as f:
-            fundamental_data = json.load(f)
-        return fundamental_data
+        try:
+            with open(fundamental_file_path, 'r') as f:
+                fundamental_data = json.load(f)
+                st.write(f"Fundamental data for {stock_name} loaded successfully.")
+                st.write(f"Content of {stock_name}.json:")
+                st.write(fundamental_data)
+            return fundamental_data
+        except json.JSONDecodeError as e:
+            st.write(f"Error decoding JSON for {stock_name}.json. Details: {str(e)}")
+            return None
     else:
         st.write(f"Warning: Fundamental data not found for {stock_name}. Skipping. Path: {fundamental_file_path}")
         return None
