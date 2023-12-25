@@ -94,7 +94,6 @@ if st.button("Train Models"):
     future_prices_arima_list = []
     latest_actual_prices = []
     future_price_lstm_list = []
-    total_revenue_list = []
     net_income_list = []
     stock_names = []
 
@@ -173,24 +172,23 @@ if st.button("Train Models"):
         fundamental_data = read_fundamental_data(stock_folder, stock_name)
 
         if fundamental_data is not None:
-            # Extract Total Revenue/Income and Net Income from fundamental data
-            total_revenue_income = fundamental_data.get('Total Revenue/Income', [])
+            # Extract Net Income from fundamental data
             net_income = fundamental_data.get('Net Income', [])
 
-            if len(total_revenue_income) < 2 or len(net_income) < 2:
-                st.write(f"Insufficient data for Total Revenue/Income or Net Income for {stock_name}. Skipping.")
+            if net_income is None:
+                st.write(f"Insufficient data for Net Income for {stock_name}. Skipping.")
             else:
-                # Output Total Revenue/Income and Net Income
-                st.write(f"Total Revenue/Income for {stock_name}: {total_revenue_income}")
+                # Output Net Income
                 st.write(f"Net Income for {stock_name}: {net_income}")
+
+                # Append to lists
+                net_income_list.append(net_income)
 
         correlations.append(correlation_close_cpi)
         future_prices_lr_list.append(future_prices_lr[0])
         future_prices_arima_list.append(future_prices_arima)
         latest_actual_prices.append(latest_actual_price)
         future_price_lstm_list.append(future_price_lstm)
-        total_revenue_list.append(total_revenue_income)
-        net_income_list.append(net_income)
         stock_names.append(stock_name)
 
     # Create a DataFrame for results
@@ -201,7 +199,6 @@ if st.button("Train Models"):
         'Predicted Price Change (ARIMA)': future_prices_arima_list,
         'Latest Actual Price': latest_actual_prices,
         'Predicted Stock Price (LSTM)': future_price_lstm_list,
-        'Total Revenue/Income': total_revenue_list,
         'Net Income': net_income_list
     }
     results_df = pd.DataFrame(results_data)
