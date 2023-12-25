@@ -188,13 +188,19 @@ if st.button("Train Models"):
             income_statement = fundamental_data.get('IncomeStatement', {})
             st.write(f"Income Statement for {stock_name}:")
 
-            # Filter Income Statement based on specified dates
-            income_statement_df = pd.DataFrame(income_statement)
-            income_statement_df['Date'] = pd.to_datetime(income_statement_df['Date'], errors='coerce')
-            income_statement_df = income_statement_df.dropna(subset=['Date'])  # Drop rows with invalid dates
-            income_statement_df = income_statement_df[income_statement_df['Date'].dt.strftime('%b-%y').isin(specified_dates)]
-            income_statement_df = income_statement_df.sort_values(by='Date')
-            st.table(income_statement_df)
+            if 'Total Revenue/Income' in income_statement and 'Net Income' in income_statement:
+                # Filter Income Statement based on specified dates
+                income_statement_df = pd.DataFrame(income_statement)
+                income_statement_df['Date'] = pd.to_datetime(income_statement_df['Date'], errors='coerce')
+                income_statement_df = income_statement_df.dropna(subset=['Date'])  # Drop rows with invalid dates
+                income_statement_df = income_statement_df[income_statement_df['Date'].dt.strftime('%b-%y').isin(specified_dates)]
+                income_statement_df = income_statement_df.sort_values(by='Date')
+                st.table(income_statement_df)
+            else:
+                st.write(f"Warning: Missing 'Total Revenue/Income' or 'Net Income' in Income Statement for {stock_name}.")
+                st.write(f"Income Statement data: {income_statement}")
+        else:
+            st.write(f"Warning: Fundamental data not found for {stock_name}. Skipping. Path: {fundamental_file_path}")
 
         correlations.append(correlation_close_cpi)
         future_prices_lr_list.append(future_prices_lr[0])
