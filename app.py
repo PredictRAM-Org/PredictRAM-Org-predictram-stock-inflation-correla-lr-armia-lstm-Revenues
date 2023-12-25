@@ -183,6 +183,14 @@ if st.button("Train Models"):
             st.write(f"Income Statement for {stock_name}:")
             st.write(income_statement)
 
+            # Display date-wise Net Income
+            net_income_data = [{"Date": entry["Date"], "Net Income": entry["Net Income"]} for entry in income_statement]
+            net_income_df = pd.DataFrame(net_income_data)
+            net_income_df['Date'] = pd.to_datetime(net_income_df['Date'], errors='coerce')
+            net_income_df.set_index('Date', inplace=True)
+            st.write(f"Date-wise Net Income for {stock_name}:")
+            st.line_chart(net_income_df['Net Income'])
+
         correlations.append(correlation_close_cpi)
         future_prices_lr_list.append(future_prices_lr[0])
         future_prices_arima_list.append(future_prices_arima)
