@@ -181,6 +181,7 @@ if st.button("Train Models"):
             st.write(f"Income Statement for {stock_name}:")
             income_statement_df = pd.DataFrame(income_statement)
             income_statement_df['Date'] = pd.to_datetime(income_statement_df['Date'], errors='coerce')
+            income_statement_df = income_statement_df.dropna(subset=['Date'])  # Drop rows with invalid dates
             income_statement_df = income_statement_df.sort_values(by='Date')
             st.table(income_statement_df)
 
