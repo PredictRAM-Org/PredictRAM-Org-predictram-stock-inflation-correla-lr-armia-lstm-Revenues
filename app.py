@@ -39,7 +39,7 @@ def predict_future_lstm(last_observed_price, model, min_max_scaler, num_steps=1)
     return min_max_scaler.inverse_transform(np.array(predicted_prices).reshape(1, -1))[0]
 
 # Function to read fundamental data from JSON files
-def read_fundamental_data(fundamental_data, stock_name):
+def read_fundamental_data(stock_folder, stock_name):
     fundamental_file_path = os.path.join(stock_folder, "fundamental_data", f"{stock_name}_data.json")
     if os.path.exists(fundamental_file_path):
         try:
@@ -181,15 +181,7 @@ if st.button("Train Models"):
             # Output Income Statement
             income_statement = fundamental_data.get('IncomeStatement', {})
             st.write(f"Income Statement for {stock_name}:")
-            st.write(income_statement)
-
-            # Display date-wise Net Income
-            net_income_data = [{"Date": entry["Date"], "Net Income": entry["Net Income"]} for entry in income_statement]
-            net_income_df = pd.DataFrame(net_income_data)
-            net_income_df['Date'] = pd.to_datetime(net_income_df['Date'], errors='coerce')
-            net_income_df.set_index('Date', inplace=True)
-            st.write(f"Date-wise Net Income for {stock_name}:")
-            st.line_chart(net_income_df['Net Income'])
+            st.table(pd.DataFrame(income_statement))
 
         correlations.append(correlation_close_cpi)
         future_prices_lr_list.append(future_prices_lr[0])
