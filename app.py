@@ -179,7 +179,10 @@ if st.button("Train Models"):
             # Output Income Statement
             income_statement = fundamental_data.get('IncomeStatement', {})
             st.write(f"Income Statement for {stock_name}:")
-            st.table(pd.DataFrame(income_statement))
+            income_statement_df = pd.DataFrame(income_statement)
+            income_statement_df['Date'] = pd.to_datetime(income_statement_df['Date'], errors='coerce')
+            income_statement_df = income_statement_df.sort_values(by='Date')
+            st.table(income_statement_df)
 
         correlations.append(correlation_close_cpi)
         future_prices_lr_list.append(future_prices_lr[0])
